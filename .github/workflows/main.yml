@@ -37,7 +37,8 @@ jobs:
 
       - name: Start Avica Service
         shell: powershell
-        run: cmd /c show.bat
+        run: |
+          cmd /c show.bat
 
       - name: Keep Session Active
         shell: powershell
