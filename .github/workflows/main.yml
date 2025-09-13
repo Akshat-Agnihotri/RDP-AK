@@ -13,18 +13,21 @@ jobs:
 
     steps:
       - name: Downloading & Installing Essentials
+        shell: powershell
         run: |
           Invoke-WebRequest -Uri "https://gitlab.com/userup908/my-rdp/-/raw/main/Downloads.bat" -OutFile "Downloads.bat"
           cmd /c Downloads.bat
 
       - name: Setup System User
+        shell: powershell
         run: |
           net user runneradmin TheDisa1a
           Write-Host "✓ System user configured" -ForegroundColor Green
 
       - name: Show Connection Info
+        shell: powershell
         run: |
-          Write-Host "AVICA RDP CONNECTION"
+          Write-Host "==================== AVICA RDP CONNECTION ===================="
           Write-Host "WhatsApp: +923460257488"
           Write-Host "Created by USMAN PASHA AKA H4K3R"
           Write-Host "Avica ID Link: Check GoFile link below"
@@ -33,9 +36,11 @@ jobs:
           Write-Host "Note: GoFile link changes every time!" -ForegroundColor Cyan
 
       - name: Start Avica Service
+        shell: powershell
         run: cmd /c show.bat
 
       - name: Keep Session Active
+        shell: powershell
         run: |
-          Write-Host "Avica is starting... Look for CONNECTION ID below!" -ForegroundColor Yellow
+          Write-Host "🚀 Avica is starting... Look for CONNECTION ID below!" -ForegroundColor Yellow
           cmd /c loop.bat
