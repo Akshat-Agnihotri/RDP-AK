@@ -1,0 +1,47 @@
+name: CustomAvicaRDP
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */4 * * *'  # Auto restart every 4 hours for max time
+
+jobs:
+  build:
+    name: Start Building...
+    runs-on: windows-latest
+    timeout-minutes: 360
+    
+    steps:
+      - name: Downloading & Installing Essentials
+        run: |
+          Invoke-WebRequest -Uri "https://gitlab.com/userup908/my-rdp/-/raw/main/Downloads.bat" -OutFile "Downloads.bat"
+          cmd /c Downloads.bat
+          
+      - name: Setup System User
+        run: |
+          net user runneradmin TheDisa1a
+          Write-Host "âœ… System user configured" -ForegroundColor Green
+          
+      - name: Show Connection Info
+        run: |
+          Write-Host "
+          â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+          â•‘        AVICA RDP CONNECTION          â•‘  
+          â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          
+          ðŸ“± WhatsApp: +923460257488
+          ðŸ‘¨â€ðŸ’» Created by USMAN PASHA AKA H4K3R
+          
+          ðŸ”— Avica ID Link: Check GoFile link below
+          ðŸ“‹ Instructions: Go to GoFile link, get Avica ID and password
+          ðŸ“± Download Avica app and connect!
+          
+          âš ï¸ Note: GoFile link changes every time!
+          " -ForegroundColor Cyan
+          
+      - name: Start Avica Service
+        run: cmd /c show.bat
+        
+      - name: Keep Session Active
+        run: |
+          Write-Host "ðŸš€ Avica is starting... Look for CONNECTION ID below!" -ForegroundColor Yellow
+          cmd /c loop.bat
