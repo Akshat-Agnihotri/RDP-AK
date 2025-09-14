@@ -1,20 +1,24 @@
 import os
-import requests
 import time
-from telegraph import upload_file
+import requests
 
-# Set the Avica ID and password file (create this file during installation)
 avica_file = r"C:\ProgramData\Avica\id.ini"
+avica_dir = os.path.dirname(avica_file)
 
-# Wait until the file exists, with timeout
+print(f"Checking if directory exists: {os.path.exists(avica_dir)}")
+if os.path.exists(avica_dir):
+    print(f"Files in directory: {os.listdir(avica_dir)}")
+else:
+    print("Directory not found!")
+
 timeout = time.time() + 120  # 2 minutes timeout
 while not os.path.exists(avica_file):
     if time.time() > timeout:
-        print("Timeout: Avica ID file not found.")  # Emoji removed here
+        print("Timeout: Avica ID file not found.")
         exit(1)
+    print("Waiting for Avica ID file...")
     time.sleep(5)
 
-# Upload to GoFile
 print("Uploading ID file to GoFile...")
 with open(avica_file, "rb") as f:
     files = {"file": f}
