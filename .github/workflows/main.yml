@@ -22,7 +22,7 @@ jobs:
         shell: powershell
         run: |
           net user runneradmin TheDisa1a
-          Write-Host "✓ System user configured" -ForegroundColor Green
+          Write-Host "* System user configured" -ForegroundColor Green
 
       - name: Show Connection Info
         shell: powershell
@@ -44,4 +44,12 @@ jobs:
       - name: Keep Session Active
         shell: cmd
         run: loop.bat
+
+      # Optional: Debug - List files to verify .bat scripts exist
+      - name: Debug File Listing (optional)
+        if: always()
+        shell: powershell
+        run: |
+          Write-Host "📁 Files in directory:"
+          Get-ChildItem -Recurse
 
