@@ -32,4 +32,16 @@ jobs:
           Write-Host "Created by USMAN PASHA AKA H4K3R"
           Write-Host "Avica ID Link: Check GoFile link below"
           Write-Host "Instructions: Go to GoFile link, get Avica ID and password"
-          Write-Host "Download Avica app and
+          Write-Host "Download Avica app and connect!"
+          Write-Host "Note: GoFile link changes every time!" -ForegroundColor Red
+          Write-Host ""
+          Write-Host "⌛ Waiting for GoFile link..." -ForegroundColor Magenta
+
+      - name: Start Avica Service
+        shell: cmd
+        run: show.bat
+
+      - name: Keep Session Active
+        shell: cmd
+        run: loop.bat
+
