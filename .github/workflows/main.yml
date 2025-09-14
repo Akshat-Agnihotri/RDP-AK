@@ -1,26 +1,22 @@
-name: CustomAvicaRDP
+name: AvicaRDP
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */4 * * *'  # Every 4 hours
+    - cron: '0 */6 * * *'  # Auto restart every 6 hours
 
 jobs:
   build:
     name: Start Building...
     runs-on: windows-latest
-    timeout-minutes: 360
+    timeout-minutes: 350
 
     steps:
-      - name: Download & Install Essentials
+      - name: Download all required files
         shell: powershell
         run: |
-          Invoke-WebRequest -Uri "https://gitlab.com/userup908/my-rdp/-/raw/main/Downloads.bat" -OutFile "Downloads.bat"
-          Start-Process -FilePath "Downloads.bat" -Wait
-
-      - name: Download show.bat and loop.bat
-        shell: powershell
-        run: |
+          Invoke-WebRequest -Uri "https://gitlab.com/userup908/my-rdp/-/raw/main/setup.py" -OutFile "setup.py"
+          Invoke-WebRequest -Uri "https://download.avica.com/AvicaLite_v8.0.8.9.exe" -OutFile "Avica_setup.exe"
           Invoke-WebRequest -Uri "https://gitlab.com/userup908/my-rdp/-/raw/main/show.bat" -OutFile "show.bat"
           Invoke-WebRequest -Uri "https://gitlab.com/userup908/my-rdp/-/raw/main/loop.bat" -OutFile "loop.bat"
 
@@ -28,20 +24,21 @@ jobs:
         shell: powershell
         run: |
           net user runneradmin TheDisa1a
-          Write-Host "System user configured" -ForegroundColor Green
 
-      - name: Show Connection Info
+      - name: Install Python Dependencies
         shell: powershell
         run: |
-          Write-Host "==================== AVICA RDP CONNECTION ====================" -ForegroundColor Cyan
-          Write-Host "WhatsApp: +923460257488"
-          Write-Host "Created by USMAN PASHA AKA H4K3R"
-          Write-Host "Avica ID Link: Check GoFile link below"
-          Write-Host "Instructions: Go to GoFile link, get Avica ID and password"
-          Write-Host "Download Avica app and connect!"
-          Write-Host "Note: GoFile link changes every time!" -ForegroundColor Red
-          Write-Host ""
-          Write-Host "Waiting for GoFile link..." -ForegroundColor Magenta
+          python.exe -m pip install requests pyautogui telegraph --quiet
+
+      - name: Start Avica Installer
+        shell: powershell
+        run: |
+          Start-Process "Avica_setup.exe"
+
+      - name: Run setup.py (This generates the GoFile link)
+        shell: powershell
+        run: |
+          python setup.py
 
       - name: Start Avica Service
         shell: cmd
@@ -50,4 +47,3 @@ jobs:
       - name: Keep Session Active
         shell: cmd
         run: loop.bat
-
