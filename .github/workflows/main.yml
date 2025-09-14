@@ -3,7 +3,7 @@ name: CustomAvicaRDP
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */4 * * *'  # Auto restart every 4 hours
+    - cron: '0 */4 * * *'
 
 jobs:
   build:
@@ -35,7 +35,20 @@ jobs:
           Write-Host "Download Avica app and connect!"
           Write-Host "Note: GoFile link changes every time!" -ForegroundColor Red
           Write-Host ""
-          Write-Host "⌛ Waiting for GoFile link..." -ForegroundColor Magenta
+          Write-Host "Waiting for GoFile link..." -ForegroundColor Magenta
+
+      - name: Verify Required Files Exist
+        shell: powershell
+        run: |
+          if (!(Test-Path ".\show.bat")) {
+            Write-Host "❌ ERROR: show.bat not found!"
+            exit 1
+          }
+          if (!(Test-Path ".\loop.bat")) {
+            Write-Host "❌ ERROR: loop.bat not found!"
+            exit 1
+          }
+          Write-Host "✅ Required batch files are present."
 
       - name: Start Avica Service
         shell: cmd
@@ -45,11 +58,10 @@ jobs:
         shell: cmd
         run: loop.bat
 
-      # Optional: Debug - List files to verify .bat scripts exist
       - name: Debug File Listing (optional)
         if: always()
         shell: powershell
         run: |
-          Write-Host "📁 Files in directory:"
+          Write-Host "Listing current directory:"
           Get-ChildItem -Recurse
 
