@@ -2,48 +2,33 @@ name: AvicaRDP
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 */6 * * *'  # Auto restart every 6 hours
 
 jobs:
   build:
-    name: Start Building...
     runs-on: windows-latest
-    timeout-minutes: 350
+    timeout-minutes: 360
 
     steps:
-      - name: Download all required files
-        shell: powershell
+      - name: Download files
         run: |
-          Invoke-WebRequest -Uri "https://gitlab.com/userup908/my-rdp/-/raw/main/setup.py" -OutFile "setup.py"
           Invoke-WebRequest -Uri "https://download.avica.com/AvicaLite_v8.0.8.9.exe" -OutFile "Avica_setup.exe"
-          Invoke-WebRequest -Uri "https://gitlab.com/userup908/my-rdp/-/raw/main/show.bat" -OutFile "show.bat"
-          Invoke-WebRequest -Uri "https://gitlab.com/userup908/my-rdp/-/raw/main/loop.bat" -OutFile "loop.bat"
+          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Akshat-Agnihotri/RDP-AK/refs/heads/main/.github/workflows/setup.py" -OutFile "setup.py"
+          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Akshat-Agnihotri/RDP-AK/refs/heads/main/.github/workflows/loop.bat" -OutFile "loop.bat"
 
       - name: Setup System User
-        shell: powershell
-        run: |
-          net user runneradmin TheDisa1a
+        run: net user runneradmin TheDisa1a
 
       - name: Install Python Dependencies
-        shell: powershell
-        run: |
-          python.exe -m pip install requests pyautogui telegraph --quiet
+        run: python -m pip install requests telegraph
 
-      - name: Start Avica Installer
-        shell: powershell
+      - name: Enable RDP + Install Avica
         run: |
-          Start-Process "Avica_setup.exe"
+          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
+          Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+          Start-Process Avica_setup.exe
 
-      - name: Run setup.py (This generates the GoFile link)
-        shell: powershell
-        run: |
-          python setup.py
-
-      - name: Start Avica Service
-        shell: cmd
-        run: show.bat
+      - name: Wait for Avica ID + Upload to GoFile
+        run: python setup.py
 
       - name: Keep Session Active
-        shell: cmd
-        run: loop.bat
+        run: cmd /c loop.bat
